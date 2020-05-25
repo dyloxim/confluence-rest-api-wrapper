@@ -7,14 +7,14 @@ This is an API for the confluence REST API. It is written to be used within a ru
 
 ```ruby
 $ pry -I . -r /setup.rb
-[1] pry(main)> CM = ConfluenceManager.new('production_profile')
+[1]> CM = ConfluenceManager.new('production_profile')
 => #<ConfluenceManager:0x00007fd8dba987e0 @profile_name="prod">
 
-[2] pry(main)> page = CM.search('title = "wrong title"').first
+[2]> page = CM.search('title = "wrong title"').first
 TASK INFO: [get] request to '/rest/api/content/search' returned 200 response code.
 => #<Page:0x00007fd8dbb2a820 @cached={}, @id="199692279", @profile_name="prod", @title="bad title">
 
-[3] pry(main)> page.title = 'right title'
+[3]> page.title = 'right title'
 TASK INFO: [get] request to '/rest/api/content/199692279' returned 200 response code.
 TASK INFO: [put] request to '/rest/api/content/199692279' returned 200 response code.
 => "right title"
@@ -28,7 +28,7 @@ TASK INFO: [put] request to '/rest/api/content/199692279' returned 200 response 
 Note: I had some trouble getting Pry (ruby REPL environment) to use the correct ruby version, but using rvm sorted this out for me.
 
 ## Usage
-First, clone this repo, run `bundle install` to get the dependencies, then make a new file in the root directory called `profiles.yml`.
+First, clone this repo, run `$ bundle install` to get the dependencies, then make a new file in the root directory called `profiles.yml`.
 
 Define the profile/profiles you will use to interact with the confluence REST API here.
 
