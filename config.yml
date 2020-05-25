@@ -1,0 +1,4 @@
+---
+debug: false
+log_file: 'log.txt'
+default_page_limit: 250

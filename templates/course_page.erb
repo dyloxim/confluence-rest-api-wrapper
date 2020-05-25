@@ -1,0 +1,41 @@
+<%# course_page.erb %>
+<% if row[:awardtype_text] == 'MSc' %>
+  <p>
+  <ac:structured-macro ac:name="contentbylabel">
+  <ac:parameter ac:name="spaces">@self</ac:parameter>
+  <ac:parameter ac:name="title">Modules:</ac:parameter>
+  <ac:parameter ac:name="showLabels">false</ac:parameter>
+  <ac:parameter ac:name="max">100</ac:parameter>
+  <ac:parameter ac:name="labels"><%= "#{row[:course_abbrev]}//year1" %></ac:parameter>
+  <ac:parameter ac:name="excerpt">false</ac:parameter>
+  <ac:parameter ac:name="showSpace">false</ac:parameter>
+  <ac:parameter ac:name="type">page</ac:parameter>
+  <ac:parameter ac:name="operator">AND</ac:parameter>
+  </ac:structured-macro>
+  </p>
+<% else %>
+  <% 
+      years = if row[:awardtype_text] == 'BEng' && row[:routename] =~ /Foundation/
+                [0,1,2,3]
+              elsif row[:awardtype_text] == 'BEng'
+                [1,2,3]
+              elsif row[:awardtype_text] == 'MEng'
+                [1,2,3,4]
+              end
+  %>
+  <% for year in years %>
+    <p>
+    <ac:structured-macro ac:name="contentbylabel">
+    <ac:parameter ac:name="spaces">@self</ac:parameter>
+    <ac:parameter ac:name="title">Year <%= year %> Modules:</ac:parameter>
+    <ac:parameter ac:name="showLabels">false</ac:parameter>
+    <ac:parameter ac:name="max">100</ac:parameter>
+    <ac:parameter ac:name="labels"><%= "#{row[:course_abbrev]}//year#{year}" %></ac:parameter>
+    <ac:parameter ac:name="excerpt">false</ac:parameter>
+    <ac:parameter ac:name="showSpace">false</ac:parameter>
+    <ac:parameter ac:name="type">page</ac:parameter>
+    <ac:parameter ac:name="operator">AND</ac:parameter>
+    </ac:structured-macro>
+    </p>
+  <% end %>
+<% end %>
