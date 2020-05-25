@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# it is what it is
+# documentation needed
 class Draft
   attr_accessor :payload
   include ProfileLoader

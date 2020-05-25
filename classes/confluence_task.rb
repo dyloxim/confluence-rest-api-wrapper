@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# Classes:
-# The main class - used for all interactions with the REST API.
 # Used for running individual queries on a single connection
 class ConfluenceTask
   attr_accessor :result, :query

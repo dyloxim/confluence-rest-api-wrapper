@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# it is what it is
+# documentation needed
 class PageSet
   include Enumerable
   include ProfileLoader
@@ -66,8 +66,7 @@ class PageSet
   end
 end
 
-# to make accessing page information uniform - abstracts the json response objects
-# recieved from the confluence api
+# abstracts the json response objects recieved from the confluence api
 class Page
   attr_reader :title
   include ProfileLoader

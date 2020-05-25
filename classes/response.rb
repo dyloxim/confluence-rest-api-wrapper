@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Secondary class to `ConfluenceTask` - helps organise things
+# maps json response objects to ruby objects
 class Response
   attr_accessor :status, :headers, :body
   def initialize(status, headers, body)

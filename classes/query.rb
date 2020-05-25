@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Secondary class to `ConfluenceTask` - helps organise things
+# structured input for new ConfluenceTask objects
 class Query
   attr_reader :runner, :method, :uri
   def initialize(method:, uri:, payload: nil, headers: {})

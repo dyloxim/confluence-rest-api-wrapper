@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# !!
+# documentation needed
 class LabelSet
   include Enumerable
   include ProfileLoader
@@ -95,7 +95,7 @@ class LabelSet
   end
 end
 
-# does what it does
+# documentation needed
 class Label
   include ProfileLoader
   attr_accessor :name, :prefix, :label_id, :page_id
