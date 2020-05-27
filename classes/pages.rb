@@ -68,24 +68,13 @@ end
 
 # abstracts the json response objects recieved from the confluence api
 class Page
-  attr_reader :title
+  attr_reader :title, :body
   include ProfileLoader
   def initialize(page_json, calling_profile_name)
     @profile_name = calling_profile_name
     @id = page_json['id']
     @title = page_json['title']
-    @cached = {}
-  end
-
-  def standard_payload
-    {
-      'title': @title,
-      'type': 'page',
-      'space': { 'key': profile.space },
-      'version': {
-        'number': (version_number + 1).to_s
-      }
-    }
+    @body = page_json['body']
   end
 
   def to_s
@@ -95,25 +84,19 @@ class Page
   end
 
   def version_number
-    if @cached[:version_number].nil?
-      query = Query.new(
-        method: :get,
-        uri: "/rest/api/content/#{@id}",
-        headers: { expand: 'version.number' }
-      )
-      response = ConfluenceTask.new(query: query, profile: profile).run
-      @cached[:version_number] = response.body['version']['number']
-    end
-    @cached[:version_number]
+    query = Query.new(
+      method: :get,
+      uri: "/rest/api/content/#{@id}",
+      headers: { expand: 'version.number' }
+    )
+    response = ConfluenceTask.new(query: query, profile: profile).run
+    response.body['version']['number']
   end
 
   def labels
-    if @cached[:labels].nil?
-      query = Query.new(method: :get, uri: "/rest/api/content/#{@id}/label")
-      response = ConfluenceTask.new(query: query, profile: profile).run
-      @cached[:labels] = LabelSet.new(@profile_name, self, response.body['results'])
-    end
-    @cached[:labels]
+    query = Query.new(method: :get, uri: "/rest/api/content/#{@id}/label")
+    response = ConfluenceTask.new(query: query, profile: profile).run
+    LabelSet.new(@profile_name, self, response.body['results'])
   end
 
   def labels=(label_names)
@@ -121,7 +104,6 @@ class Page
 
     labels.clear
     labels << label_names
-    @cached[:labels] = labels
     labels
   end
 
@@ -168,15 +150,15 @@ class Page
   end
 
   def body=(new_body)
-    payload = standard_payload
-    payload['body'] = { 'storage' => { 'value' => new_body, 'representation' => 'storage' } }
+    payload = Draft.new(@profile_name, with: { 'body' => new_body })
     query = Query.new(
       method: :put,
       uri: "/rest/api/content/#{@id}",
       payload: payload, headers: { content_type: 'application/json' }
     )
     response = ConfluenceTask.new(query: query, profile: profile).run
-    @cached[:version_number] += 1
     Page.new(response.body, @profile_name)
   end
+
+  def restrictions; end
 end
