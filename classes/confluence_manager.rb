@@ -42,11 +42,11 @@ class ConfluenceManager
     search("title =\"#{title}\"", expand: expand)
   end
 
-  def search(cql, expand: nil)
+  def search_pages(cql, expand: nil)
     query = Query.new(
       method: :get,
       uri: '/rest/api/content/search',
-      headers: { expand: expand || '', cql: "#{cql} and space=#{profile.space}" }
+      headers: { expand: expand || '', cql: "#{cql} and space=#{profile.space} and type=page" }
     )
     response = ConfluenceTask.new(query: query, profile: profile).run
     PageSet.new(@profile_name, json: response)
