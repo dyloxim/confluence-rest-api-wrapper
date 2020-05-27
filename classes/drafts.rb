@@ -4,20 +4,32 @@
 class Draft
   attr_accessor :payload
   include ProfileLoader
-  def initialize(profile_name, title, body)
+  def initialize(profile_name, with: {})
     @profile_name = profile_name
-    @payload = standard_payload
-    @payload['title'] = title
-    @payload['body']['storage']['value'] = body
-  end
-
-  def self.blank(profile)
-    {
+    @payload = {
       'title' => '',
       'type' => 'page',
       'space' => { 'key' => profile.space },
       'body' => {
         'storage' => { 'value' => '', 'representation' => 'storage' }
+      }
+    }
+    with.each { |k, v| send("#{k}=", v) }
+  end
+
+  def version_number=(num)
+    @payload['version']['number'] = num.to_s
+  end
+
+  def title=(title)
+    @payload['title'] = title
+  end
+
+  def body=(body)
+    @payload['body'] = {
+      'storage' => {
+        'value' => body,
+        'representation' => 'storage'
       }
     }
   end

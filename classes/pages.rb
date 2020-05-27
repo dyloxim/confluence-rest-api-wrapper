@@ -116,8 +116,7 @@ class Page
   end
 
   def title=(new_title)
-    payload = standard_payload
-    payload['title'] = new_title
+    payload = Draft.new(@profile_name, with: { 'title' => new_title }).payload
     query = Query.new(
       method: :put,
       uri: "/rest/api/content/#{@id}",
@@ -150,7 +149,7 @@ class Page
   end
 
   def body=(new_body)
-    payload = Draft.new(@profile_name, with: { 'body' => new_body })
+    payload = Draft.new(@profile_name, with: { 'body' => new_body }).payload
     query = Query.new(
       method: :put,
       uri: "/rest/api/content/#{@id}",
