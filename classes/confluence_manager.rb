@@ -8,7 +8,7 @@ class ConfluenceManager
   end
 
   # TODO: add optional 'overwrite' parameter
-  def new(title, body)
+  def new(title:, body: nil)
     payload = Draft.new(@profile_name, title, body).payload
     query = Query.new(
       method: :post,
