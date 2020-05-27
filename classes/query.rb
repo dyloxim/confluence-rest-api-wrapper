@@ -37,8 +37,8 @@ class Query
     {
       get: ->(conn) { conn.get(@uri, @headers) },
       delete: ->(conn) { conn.delete(@uri, @headers) },
-      post: ->(conn) { conn.post(@uri, @payload.to_json, @headers) },
-      put: ->(conn) { conn.put(@uri, @payload.to_json, @headers) }
+      post: ->(conn) { conn.post(@uri, @payload, @headers) },
+      put: ->(conn) { conn.put(@uri, @payload, @headers) }
     }[@method]
   end
 

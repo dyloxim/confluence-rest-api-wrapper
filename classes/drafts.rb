@@ -2,7 +2,6 @@
 
 # documentation needed
 class Draft
-  attr_accessor :payload
   include ProfileLoader
   def initialize(profile_name, with: {})
     @profile_name = profile_name
@@ -15,6 +14,10 @@ class Draft
       }
     }
     with.each { |k, v| send("#{k}=", v) }
+  end
+
+  def payload
+    @payload.to_json
   end
 
   def version_number=(num)
