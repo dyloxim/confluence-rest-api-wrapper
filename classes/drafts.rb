@@ -2,15 +2,14 @@
 
 # documentation needed
 class Draft
-  include ProfileLoader
-  def initialize(profile_name, with: {})
-    @profile_name = profile_name
+  def initialize(manager, with: {})
+    @manager = manager
     @payload = {
-      'title' => '',
-      'type' => 'page',
-      'space' => { 'key' => profile.space },
-      'body' => {
-        'storage' => { 'value' => '', 'representation' => 'storage' }
+      title: '',
+      type: 'page',
+      space: { key: manager.space },
+      body: {
+        storage: { value: '', representation: 'storage' }
       }
     }
     with.each { |k, v| send("#{k}=", v) }
@@ -30,9 +29,9 @@ class Draft
 
   def body=(body)
     @payload['body'] = {
-      'storage' => {
-        'value' => body,
-        'representation' => 'storage'
+      storage: {
+        value: body,
+        representation: 'storage'
       }
     }
   end
