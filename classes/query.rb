@@ -35,11 +35,31 @@ class Query
 
   def api_query
     {
-      get: ->(conn) { conn.get(@uri, @headers) },
-      delete: ->(conn) { conn.delete(@uri, @headers) },
-      post: ->(conn) { conn.post(@uri, @payload, @headers) },
-      put: ->(conn) { conn.put(@uri, @payload, @headers) }
+      get: construct_get_request,
+      delete: construct_delete_request,
+      post: construct_post_request,
+      put: construct_put_request
     }[@method]
+  end
+
+  def construct_get_request
+    @headers[:expand] += config['default_expand_attributes']
+    @headers[:expand] = @headers[:expand].join(',')
+    ->(conn) { conn.get(@uri, @headers) }
+  end
+
+  def construct_delete_request
+    ->(conn) { conn.delete(@uri, @headers) }
+  end
+
+  def construct_post_request
+    @headers[:content_type] = 'application/json'
+    ->(conn) { conn.post(@uri, @payload, @headers) }
+  end
+
+  def construct_put_request
+    @headers[:content_type] = 'application/json'
+    ->(conn) { conn.put(@uri, @payload, @headers) }
   end
 
   def to_s

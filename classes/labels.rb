@@ -3,13 +3,12 @@
 # documentation needed
 class LabelSet
   include Enumerable
-  include ProfileLoader
   attr_accessor :labels
-  def initialize(caller_profile_name, page, labels_hash)
+  def initialize(manager, page, labels_hash)
     @page = page
-    @profile_name = caller_profile_name
+    @manager = manager
     @labels = labels_hash.map do |label_hash|
-      Label.new(@profile_name, page.id, label_hash: label_hash)
+      Label.new(@manager, page.id, label_hash: label_hash)
     end
   end
 
@@ -52,7 +51,7 @@ class LabelSet
 
   def add_label(label_name)
     upload_label(label_name)
-    new_label = Label.new(@profile_name, @page.id, label_name: label_name)
+    new_label = Label.new(@manager, @page.id, label_name: label_name)
     @labels << new_label unless has?(label_name)
     new_label
   end
@@ -97,10 +96,9 @@ end
 
 # documentation needed
 class Label
-  include ProfileLoader
   attr_accessor :name, :prefix, :label_id, :page_id
-  def initialize(profile_name, page_id, label_name: '', label_hash: {})
-    @profile_name = profile_name
+  def initialize(manager, page_id, label_name: '', label_hash: {})
+    @manager = manager
     @page_id = page_id
     if label_name == ''
       process_json(label_hash)
