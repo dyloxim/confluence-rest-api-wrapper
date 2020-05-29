@@ -3,5 +3,6 @@ debug: true
 log_file: 'log.txt'
 default_page_limit: 250
 default_expand_attributes:
-  - 'body.storage'
+  - 'body'
   - 'version'
+  - 'restrictions'

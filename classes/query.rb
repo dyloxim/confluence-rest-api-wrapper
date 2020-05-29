@@ -43,8 +43,7 @@ class Query
   end
 
   def construct_get_request
-    @headers[:expand] += config['default_expand_attributes']
-    @headers[:expand] = @headers[:expand].join(',')
+    @headers[:expand] = ConfluenceUtil.parse_expand_attributes(@headers[:expand])
     ->(conn) { conn.get(@uri, @headers) }
   end
 
@@ -54,6 +53,7 @@ class Query
 
   def construct_post_request
     @headers[:content_type] = 'application/json'
+    @payload = @payload.to_json
     ->(conn) { conn.post(@uri, @payload, @headers) }
   end
 

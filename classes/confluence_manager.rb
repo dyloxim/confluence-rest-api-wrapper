@@ -10,8 +10,8 @@ class ConfluenceManager
   # PAGE METHODS:
 
   # TODO: add optional 'overwrite' parameter
-  def new_page(title:, body: nil, overwrite: false)
-    payload = Draft.new(self, with: { title: title, body: body }).payload
+  def new_page(title:, body: nil, with: nil, overwrite: false)
+    payload = Draft.new(self, with: { title: title, body: body }.merge(with)).payload
     query = Query.new(method: :post, uri: '/rest/api/content', payload: payload)
     response = ConfluenceTask.new(query: query, profile: profile).run
     return Page.new(self, response.body) unless
@@ -53,7 +53,6 @@ class ConfluenceManager
     ConfluenceTask.new(query: query, profile: profile).run
   end
 
-  # rubocop:disable Metrics/AbcSize
   def update_page(id: nil, title: nil, version_number: nil, with:)
     id ||= get_page(title: title).id
     page = get_page(id: id)
@@ -65,7 +64,6 @@ class ConfluenceManager
     response = ConfluenceTask.new(query: query, profile: profile).run
     Page.new(@manager, response.body)
   end
-  # rubocop:enable Metrics/AbcSize
 
   # LABEL METHODS:
 
@@ -74,5 +72,26 @@ class ConfluenceManager
     query = Query.new(method: :get, uri: "/rest/api/content/#{id}/label")
     response = ConfluenceTask.new(query: query, profile: profile).run
     LabelSet.new(@manager, self, response.body['results'])
+  end
+
+  def new_restriction(page_id: nil, page_title: nil, permittee:, permitted_action:, user_type:)
+    page_id ||= get_page(title: page_title).id
+    query = Query.new(
+      method: :post,
+      uri: "/rest/experimental/content/#{page_id}/restriction",
+      payload: RestrictionDraft.new(permittee: permittee, permitted_action: permitted_action, user_type: user_type).payload
+    )
+    response = ConfluenceTask.new(query: query, profile: profile).run
+    RestrictionSet.new(@manager, response.body, page: self)
+  end
+
+  def delete_restrictions(page_id: nil, page_title: nil)
+    page_id ||= get_page(title: page_title).id
+    query = Query.new(
+      method: :delete,
+      uri: "/rest/experimental/content/#{page_id}/restriction"
+    )
+    response = ConfluenceTask.new(query: query, profile: profile).run
+    RestrictionSet.new(@manager, response.body, page: self)
   end
 end

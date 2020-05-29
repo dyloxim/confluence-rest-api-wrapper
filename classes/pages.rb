@@ -74,6 +74,13 @@ class Page
     @title = page_json['title']
     @body = Maybe(page_json['body'])['storage']['value'].or_else(nil)
     @version_number = Maybe(page_json['version'])['number'].or_else(nil)
+    @restriction_set = assign_restrictions(page_json['restrictions'])
+  end
+
+  def assign_restrictions(json)
+    return nil if json.nil?
+
+    RestrictionSet.new(@manager, json, page: self)
   end
 
   def body
@@ -87,6 +94,10 @@ class Page
     this_page = @manager.get_page(id: @id)
     @version_number = this_page.version_number
     @body = this_page.body
+  end
+
+  def new_child(title:, body: nil)
+    @manager.new_page(title: title, body: body, with: { parent_id: @id })
   end
 
   def version_number
@@ -151,6 +162,4 @@ class Page
   def body=(new_body)
     @manager.update_page(id: @id, with: { body: new_body })
   end
-
-  def restrictions; end
 end

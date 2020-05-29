@@ -2,6 +2,7 @@
 
 # documentation needed
 class Draft
+  attr_reader :payload
   def initialize(manager, with: {})
     @manager = manager
     @payload = {
@@ -9,10 +10,6 @@ class Draft
       space: { key: manager.profile.space }
     }
     with.each { |k, v| send("#{k}=", v) }
-  end
-
-  def payload
-    @payload.to_json
   end
 
   def version_number=(num)
@@ -34,5 +31,17 @@ class Draft
         representation: 'storage'
       }
     }
+  end
+
+  def restrictions=(restrictions)
+    @payload[:restrictions] = restrictions
+  end
+
+  def parent_id=(id)
+    @payload[:ancestors] = [id]
+  end
+
+  def parent_title=(title)
+    @payload[:ancestors] = [@manager.get_page(title: title).id]
   end
 end
